@@ -3,9 +3,9 @@ import './App.css'
 
 
 const testBoard = [
-  ['X', 'O', ''],
-  ['X', 'X', ''],
-  ['O', '', 'X']
+  ['', '', ''],
+  ['', '', 'O'],
+  ['', '', 'X']
 ] satisfies Winner[][]
 
 export type Winner = "X" | "O" | "";
@@ -118,19 +118,28 @@ export const checkWinCondition = (b: typeof testBoard): WinState => {
 
 }
 
-function renderMove(move: string, idx: number) {
-  if (move === "X") {
-    return (<div>X</div>)
-  }
-  if (move === "O") {
-    return (<div>O</div>)
-  }
-  if (move === "") {
-    return (<div>space</div>)
-  }
-
+type MoveProps = {
+  move: string
+}
+const Move = ({ move }: MoveProps) => {
+  return (
+    <div className='flex min-w-10 bg-green-500 border border-5 items-center justify-center'>
+      {move}
+    </div>
+  )
 }
 
+const Row = ({ idx }: { idx: number }) => {
+  return (
+    <div className='flex gap-3 min-h-10 m-3 border border-5'>
+      {/* returns squares for each row */}
+      {testBoard[idx].map(
+        (moveStr: string) => {
+          return (<Move move={moveStr} />)
+        })}
+    </div>
+  )
+}
 
 
 const Board = () => {
@@ -139,18 +148,10 @@ const Board = () => {
 
   return (
     <>
-      {/* row */}
-      <div className='flex gap-3'>
-        {testBoard[0].map(renderMove)}
-      </div>
-      {/* row */}
-      <div className='flex gap-3'>
-        {testBoard[1].map(renderMove)}
-      </div>
-      {/* row */}
-      <div className='flex gap-3'>
-        {testBoard[2].map(renderMove)}
-      </div>
+      <Row idx={0} />
+      <Row idx={1} />
+      <Row idx={2} />
+
     </>
   )
 
