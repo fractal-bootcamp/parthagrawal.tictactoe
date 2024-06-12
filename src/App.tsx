@@ -2,12 +2,12 @@ import { useState } from 'react'
 import './App.css'
 
 const reactBoard = [
-  ['X', '', ''],
+  ['X', 'O', ''],
   ['', '', ''],
   ['', '', '']
 ] satisfies Winner[][]
 
-type Winner = "X" | "O" | "";
+export type Winner = "X" | "O" | "";
 
 type WinState = {
   outcome: "WIN" | "TIE" | null;
