@@ -133,7 +133,24 @@ function renderMove(move: string, idx: number) {
 const Board = () => {
 
   // renders one row of the board
-  return (reactBoard[0].map(renderMove))
+
+  return (
+    <>
+      {/* row */}
+      <div className='flex gap-3'>
+        {reactBoard[0].map(renderMove)}
+      </div>
+      {/* row */}
+      <div className='flex gap-3'>
+        {reactBoard[1].map(renderMove)}
+      </div>
+      {/* row */}
+      <div className='flex gap-3'>
+        {reactBoard[2].map(renderMove)}
+      </div>
+    </>
+  )
+
 
 
 }
@@ -146,6 +163,7 @@ function App() {
 
   return (
     <>
+
       Insert Tic Tac Toe Here
       <Board />
     </>
