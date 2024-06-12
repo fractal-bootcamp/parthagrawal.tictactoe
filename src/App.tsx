@@ -2,11 +2,13 @@ import { useState } from 'react'
 import './App.css'
 
 
-const testBoard = [
-  ['', '', ''],
-  ['', '', 'O'],
+type Board = Winner[][]
+
+const initialBoard: Board = [
+  ['X', '', ''],
+  ['', 'X', 'O'],
   ['', '', 'X']
-] satisfies Winner[][]
+]
 
 export type Winner = "X" | "O" | "";
 
@@ -16,7 +18,7 @@ type WinState = {
 }
 
 
-export const checkWinCondition = (b: typeof testBoard): WinState => {
+export const checkWinCondition = (b: typeof initialBoard): WinState => {
   // check rows for equivalence
   // check columns for equivalence
   // check diagonals for equivalence
@@ -119,23 +121,34 @@ export const checkWinCondition = (b: typeof testBoard): WinState => {
 }
 
 type MoveProps = {
+  board: Board
+  setBoard: React.Dispatch<React.SetStateAction<Board>>
   move: string
+  rowIndex: number
+  mvIndex: number
 }
-const Move = ({ move }: MoveProps) => {
+const Move = ({ board, setBoard, move, rowIndex, mvIndex }: MoveProps) => {
+
   return (
-    <div className='flex min-w-10 bg-green-500 border border-5 items-center justify-center'>
-      {move}
+    <div onClick={() => {
+      console.log("click")
+      debugger;
+      const newBoard = [...board];
+      newBoard[rowIndex].splice(mvIndex, 1, "X") // QUESTION: ok? 
+      setBoard(newBoard)
+    }} className='flex min-w-10 bg-green-500 border border-5 items-center justify-center'>
+      {board[rowIndex][mvIndex]}
     </div>
   )
 }
 
-const Row = ({ idx }: { idx: number }) => {
+const Row = ({ rowIndex, board, setBoard }: { rowIndex: number, board: Board, setBoard: React.Dispatch<React.SetStateAction<Board>> }) => {
   return (
     <div className='flex gap-3 min-h-10 m-3 border border-5'>
       {/* returns squares for each row */}
-      {testBoard[idx].map(
-        (moveStr: string) => {
-          return (<Move move={moveStr} />)
+      {board[rowIndex].map(
+        (moveStr: string, mvIndex: number) => {
+          return (<Move board={board} setBoard={setBoard} move={moveStr} rowIndex={rowIndex} mvIndex={mvIndex} />)
         })}
     </div>
   )
@@ -144,13 +157,15 @@ const Row = ({ idx }: { idx: number }) => {
 
 const Board = () => {
 
+  const [board, setBoard] = useState<Board>(initialBoard)
+
   // renders one row of the board
 
   return (
     <>
-      <Row idx={0} />
-      <Row idx={1} />
-      <Row idx={2} />
+      {board.map((element, index: number) => {
+        return (<Row board={board} setBoard={setBoard} rowIndex={index} />)
+      })}
 
     </>
   )
@@ -170,7 +185,7 @@ function App() {
 
       Insert Tic Tac Toe Here
       <Board />
-      <button onClick={() => setWinState(checkWinCondition(testBoard))}>Check Win</button>
+      <button onClick={() => setWinState(checkWinCondition(initialBoard))}>Check Win</button>
       <p>
         Outcome: {winState.outcome}
       </p>
