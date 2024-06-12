@@ -170,7 +170,7 @@ const Move = ({ p, board, setBoard, rowIndex, mvIndex }: MoveProps) => {
         newBoard[rowIndex].splice(mvIndex, 1, p) // QUESTION: ok? 
         setBoard(newBoard)
       }
-    }} className='flex w-10 h-10 bg-slate-400 border border-5 items-center justify-center'>
+    }} className='flex w-10 h-10 bg-slate-400  items-center justify-center'>
       {board[rowIndex][mvIndex]}
     </button>
   )
@@ -178,7 +178,7 @@ const Move = ({ p, board, setBoard, rowIndex, mvIndex }: MoveProps) => {
 
 const Row = ({ p, rowIndex, board, setBoard }: { p: Winner, rowIndex: number, board: Board, setBoard: React.Dispatch<React.SetStateAction<Board>> }) => {
   return (
-    <div className='flex gap-3 min-h-10 m-3 border border-5'>
+    <div className='flex gap-3 min-h-10 m-3 '>
       {/* returns squares for each row */}
       {board[rowIndex].map(
         (_moveStr: string, mvIndex: number) => {
