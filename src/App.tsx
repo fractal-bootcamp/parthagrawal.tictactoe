@@ -30,10 +30,19 @@ export const checkWinCondition = (b: typeof reactBoard): WinState => {
   for (let c = 0; c < 3; c++) {
     const winner: Winner = checkColumn([b[0][c], b[1][c], b[2][c]])
     if (winner) {
+
       return { outcome: !!winner ? "WIN" : null, winner: winner }
     }
   }
+  const diag1Winner: Winner = checkDiagonalOne([b[0][0], b[1][1], b[2][2]])
+  if (diag1Winner) {
+    return { outcome: !!diag1Winner ? "WIN" : null, winner: diag1Winner }
+  }
 
+  const diag2Winner: Winner = checkDiagonalTwo([b[2][0], b[1][1], b[0][2]])
+  if (diag2Winner) {
+    return { outcome: !!diag2Winner ? "WIN" : null, winner: diag2Winner }
+  }
 
   function checkRow(row: Winner[]): Winner {
     const winner = row.reduce((prev, curr) => {

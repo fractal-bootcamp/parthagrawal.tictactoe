@@ -1,9 +1,9 @@
 import { checkWinCondition } from "./src/App"
 
 const testBoard = [
-    ['X', '', ''],
-    ['X', 'X', 'O'],
-    ['X', '', '']
+    ['O', '', 'O'],
+    ['', 'O', ''],
+    ['X', '', 'O']
 ]
 
 const winState = checkWinCondition(testBoard)
