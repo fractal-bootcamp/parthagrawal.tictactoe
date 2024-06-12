@@ -2,14 +2,16 @@ import { useState } from 'react'
 import './App.css'
 
 const reactBoard = [
-  ['O', '', ''],
+  ['X', '', ''],
   ['', '', ''],
   ['', '', '']
-]
+] satisfies Winner[][]
+
+type Winner = "X" | "O" | "";
 
 type WinState = {
   outcome: "WIN" | "TIE" | null;
-  winner: "X" | "O" | null;
+  winner: Winner;
 }
 
 
@@ -19,22 +21,29 @@ export const checkWinCondition = (b: typeof reactBoard): WinState => {
   // check diagonals for equivalence
 
   for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
-    const winner = checkRow(b[rowIndex])
+    const winner: Winner = checkRow(b[rowIndex])
     if (winner) {
       return { outcome: !!winner ? "WIN" : null, winner: winner }
-
     }
   }
 
-  function checkRow(row: string[]) {
+  for (let c = 0; c < 3; c++) {
+    const winner: Winner = checkColumn([b[0][c], b[1][c], b[2][c]])
+    if (winner) {
+      return { outcome: !!winner ? "WIN" : null, winner: winner }
+    }
+  }
+
+
+  function checkRow(row: Winner[]): Winner {
     const winner = row.reduce((prev, curr) => {
       if (prev === "") {
-        return null;
+        return "";
       }
       if (prev === curr) {
         return curr
       }
-      return null;
+      return "";
     })
     return winner;
 
@@ -42,9 +51,50 @@ export const checkWinCondition = (b: typeof reactBoard): WinState => {
 
   }
 
+  function checkColumn(col: Winner[]): Winner {
+    const winner: Winner = col.reduce((prev, curr) => {
+      if (prev === "") {
+        return "";
+      }
+      if (prev === curr) {
+        return curr
+      }
+      return "";
+    })
+    return winner;
+
+  }
+
+  function checkDiagonalOne(diag: Winner[]): Winner {
+    const winner: Winner = diag.reduce((prev, curr) => {
+      if (prev === "") {
+        return "";
+      }
+      if (prev === curr) {
+        return curr
+      }
+      return "";
+    })
+    return winner;
+
+  }
+  function checkDiagonalTwo(diag: Winner[]): Winner {
+    const winner: Winner = diag.reduce((prev, curr) => {
+      if (prev === "") {
+        return "";
+      }
+      if (prev === curr) {
+        return curr
+      }
+      return "";
+    })
+    return winner;
+
+  }
+
   return {
     outcome: null,
-    winner: null
+    winner: ""
   }
   // write a function to check one row, and then map through
   // all the rows
