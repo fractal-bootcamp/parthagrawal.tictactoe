@@ -163,16 +163,16 @@ type MoveProps = {
 const Move = ({ p, board, setBoard, rowIndex, mvIndex }: MoveProps) => {
 
   return (
-    <div onClick={() => {
+    <button onClick={() => {
       if (board[rowIndex][mvIndex] === "") {
         console.log("click")
         const newBoard = [...board];
         newBoard[rowIndex].splice(mvIndex, 1, p) // QUESTION: ok? 
         setBoard(newBoard)
       }
-    }} className='flex min-w-10 bg-green-500 border border-5 items-center justify-center'>
+    }} className='flex w-10 h-10 bg-slate-400 border border-5 items-center justify-center'>
       {board[rowIndex][mvIndex]}
-    </div>
+    </button>
   )
 }
 
