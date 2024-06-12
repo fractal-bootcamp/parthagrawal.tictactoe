@@ -5,9 +5,9 @@ import './App.css'
 type Board = Winner[][]
 
 const initialBoard: Board = [
-  ['X', '', ''],
-  ['', 'X', 'O'],
-  ['', '', 'X']
+  ['', '', ''],
+  ['', '', ''],
+  ['', '', '']
 ]
 
 export type Winner = "X" | "O" | "";
@@ -104,6 +104,8 @@ export const checkWinCondition = (b: typeof initialBoard): WinState => {
 
   }
 
+
+
   return {
     outcome: null,
     winner: ""
@@ -157,6 +159,9 @@ const Row = ({ p, rowIndex, board, setBoard }: { p: Winner, rowIndex: number, bo
 
 const Board = () => {
 
+  const [winState, setWinState] = useState<WinState>({ outcome: null, winner: "" })
+
+
   const [board, setBoard] = useState<Board>(initialBoard)
   const [p, setPlayer] = useState<Winner>("O")
   // renders one row of the board
@@ -166,11 +171,24 @@ const Board = () => {
     p === "O" ? setPlayer("X") : setPlayer("O")
   }, [board])
 
+  useEffect(() => {
+    console.log("checking win:")
+    setWinState(checkWinCondition(board))
+  }, [board])
+
   return (
     <>
       {board.map((element, index: number) => {
         return (<Row p={p} board={board} setBoard={setBoard} rowIndex={index} />)
       })}
+
+      <button onClick={() => setWinState(checkWinCondition(initialBoard))}>Check Win</button>
+      <p>
+        Outcome: {winState.outcome}
+      </p>
+      <p>
+        Winner: {winState.winner}
+      </p>
 
     </>
   )
@@ -180,7 +198,6 @@ const Board = () => {
 }
 
 function App() {
-  const [winState, setWinState] = useState<WinState>({ outcome: null, winner: "" })
 
   // pass the board row
   // render the board element
@@ -190,13 +207,7 @@ function App() {
 
       Insert Tic Tac Toe Here
       <Board />
-      <button onClick={() => setWinState(checkWinCondition(initialBoard))}>Check Win</button>
-      <p>
-        Outcome: {winState.outcome}
-      </p>
-      <p>
-        Winner: {winState.winner}
-      </p>
+
     </>
   )
 }
