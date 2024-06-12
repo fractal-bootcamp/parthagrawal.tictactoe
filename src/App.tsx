@@ -5,9 +5,9 @@ import './App.css'
 type Board = Winner[][]
 
 const initialBoard: Board = [
-  ['X', '', ''],
-  ['', 'X', 'O'],
-  ['', '', 'X']
+  ['', '', ''],
+  ['', '', ''],
+  ['', '', '']
 ]
 
 export type Winner = "X" | "O" | "";
@@ -104,10 +104,43 @@ export const checkWinCondition = (b: typeof initialBoard): WinState => {
 
   }
 
-  return {
-    outcome: null,
-    winner: ""
+  // tie condition
+  // const foundEmpty = b.findIndex(
+  //   (r) => {
+  //     r.findIndex(
+  //       (c) => { c === '' }) === -1
+  //   })
+  // console.log("foundEmpty: " + foundEmpty)
+
+
+  let tieFlag = true;
+  b.map((element) => {
+    if (element.includes('')) {
+      console.log('ayo')
+
+      tieFlag = false;
+      return;
+    }
+  })
+
+  if (tieFlag) {
+    return {
+      outcome: "TIE",
+      winner: ""
+    }
   }
+  else {
+    return {
+      outcome: null,
+      winner: ""
+    }
+
+  }
+
+
+
+
+
   // write a function to check one row, and then map through
   // all the rows
 
@@ -132,10 +165,12 @@ const Move = ({ p, board, setBoard, move, rowIndex, mvIndex }: MoveProps) => {
 
   return (
     <div onClick={() => {
-      console.log("click")
-      const newBoard = [...board];
-      newBoard[rowIndex].splice(mvIndex, 1, p) // QUESTION: ok? 
-      setBoard(newBoard)
+      if (board[rowIndex][mvIndex] === "") {
+        console.log("click")
+        const newBoard = [...board];
+        newBoard[rowIndex].splice(mvIndex, 1, p) // QUESTION: ok? 
+        setBoard(newBoard)
+      }
     }} className='flex min-w-10 bg-green-500 border border-5 items-center justify-center'>
       {board[rowIndex][mvIndex]}
     </div>
@@ -157,7 +192,10 @@ const Row = ({ p, rowIndex, board, setBoard }: { p: Winner, rowIndex: number, bo
 
 const Board = () => {
 
-  const [board, setBoard] = useState<Board>(initialBoard)
+  const [winState, setWinState] = useState<WinState>({ outcome: null, winner: "" })
+
+
+  const [board, setBoard] = useState<Board>(structuredClone(initialBoard))
   const [p, setPlayer] = useState<Winner>("O")
   // renders one row of the board
 
@@ -166,11 +204,24 @@ const Board = () => {
     p === "O" ? setPlayer("X") : setPlayer("O")
   }, [board])
 
+  useEffect(() => {
+    console.log("checking win:")
+    setWinState(checkWinCondition(board))
+  }, [board])
+
   return (
     <>
       {board.map((element, index: number) => {
         return (<Row p={p} board={board} setBoard={setBoard} rowIndex={index} />)
       })}
+
+      <button onClick={() => { setBoard(structuredClone(initialBoard)) }}>Restart</button >
+      <p>
+        Outcome: {winState.outcome}
+      </p>
+      <p>
+        Winner: {winState.winner}
+      </p>
 
     </>
   )
@@ -180,7 +231,6 @@ const Board = () => {
 }
 
 function App() {
-  const [winState, setWinState] = useState<WinState>({ outcome: null, winner: "" })
 
   // pass the board row
   // render the board element
@@ -188,15 +238,9 @@ function App() {
   return (
     <>
 
-      Insert Tic Tac Toe Here
+      Tic Tac Toe
       <Board />
-      <button onClick={() => setWinState(checkWinCondition(initialBoard))}>Check Win</button>
-      <p>
-        Outcome: {winState.outcome}
-      </p>
-      <p>
-        Winner: {winState.winner}
-      </p>
+
     </>
   )
 }
