@@ -104,12 +104,43 @@ export const checkWinCondition = (b: typeof initialBoard): WinState => {
 
   }
 
+  // tie condition
+  // const foundEmpty = b.findIndex(
+  //   (r) => {
+  //     r.findIndex(
+  //       (c) => { c === '' }) === -1
+  //   })
+  // console.log("foundEmpty: " + foundEmpty)
 
 
-  return {
-    outcome: null,
-    winner: ""
+  let tieFlag = true;
+  b.map((element) => {
+    if (element.includes('')) {
+      console.log('ayo')
+
+      tieFlag = false;
+      return;
+    }
+  })
+
+  if (tieFlag) {
+    return {
+      outcome: "TIE",
+      winner: ""
+    }
   }
+  else {
+    return {
+      outcome: null,
+      winner: ""
+    }
+
+  }
+
+
+
+
+
   // write a function to check one row, and then map through
   // all the rows
 
