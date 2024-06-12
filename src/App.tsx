@@ -165,10 +165,12 @@ const Move = ({ p, board, setBoard, move, rowIndex, mvIndex }: MoveProps) => {
 
   return (
     <div onClick={() => {
-      console.log("click")
-      const newBoard = [...board];
-      newBoard[rowIndex].splice(mvIndex, 1, p) // QUESTION: ok? 
-      setBoard(newBoard)
+      if (board[rowIndex][mvIndex] === "") {
+        console.log("click")
+        const newBoard = [...board];
+        newBoard[rowIndex].splice(mvIndex, 1, p) // QUESTION: ok? 
+        setBoard(newBoard)
+      }
     }} className='flex min-w-10 bg-green-500 border border-5 items-center justify-center'>
       {board[rowIndex][mvIndex]}
     </div>
