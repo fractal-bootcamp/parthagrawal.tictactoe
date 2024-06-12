@@ -156,12 +156,11 @@ export const checkWinCondition = (b: typeof initialBoard): WinState => {
 type MoveProps = {
   board: Board
   setBoard: React.Dispatch<React.SetStateAction<Board>>
-  move: string
   rowIndex: number
   mvIndex: number
   p: Winner
 }
-const Move = ({ p, board, setBoard, move, rowIndex, mvIndex }: MoveProps) => {
+const Move = ({ p, board, setBoard, rowIndex, mvIndex }: MoveProps) => {
 
   return (
     <div onClick={() => {
@@ -182,12 +181,13 @@ const Row = ({ p, rowIndex, board, setBoard }: { p: Winner, rowIndex: number, bo
     <div className='flex gap-3 min-h-10 m-3 border border-5'>
       {/* returns squares for each row */}
       {board[rowIndex].map(
-        (moveStr: string, mvIndex: number) => {
-          return (<Move p={p} board={board} setBoard={setBoard} move={moveStr} rowIndex={rowIndex} mvIndex={mvIndex} />)
+        (_moveStr: string, mvIndex: number) => {
+          return (<Move p={p} board={board} setBoard={setBoard} rowIndex={rowIndex} mvIndex={mvIndex} />)
         })}
     </div>
   )
 }
+
 
 
 const Board = () => {
@@ -211,7 +211,7 @@ const Board = () => {
 
   return (
     <>
-      {board.map((element, index: number) => {
+      {board.map((_element, index: number) => {
         return (<Row p={p} board={board} setBoard={setBoard} rowIndex={index} />)
       })}
 
