@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 
@@ -126,15 +126,15 @@ type MoveProps = {
   move: string
   rowIndex: number
   mvIndex: number
+  p: Winner
 }
-const Move = ({ board, setBoard, move, rowIndex, mvIndex }: MoveProps) => {
+const Move = ({ p, board, setBoard, move, rowIndex, mvIndex }: MoveProps) => {
 
   return (
     <div onClick={() => {
       console.log("click")
-      debugger;
       const newBoard = [...board];
-      newBoard[rowIndex].splice(mvIndex, 1, "X") // QUESTION: ok? 
+      newBoard[rowIndex].splice(mvIndex, 1, p) // QUESTION: ok? 
       setBoard(newBoard)
     }} className='flex min-w-10 bg-green-500 border border-5 items-center justify-center'>
       {board[rowIndex][mvIndex]}
@@ -142,13 +142,13 @@ const Move = ({ board, setBoard, move, rowIndex, mvIndex }: MoveProps) => {
   )
 }
 
-const Row = ({ rowIndex, board, setBoard }: { rowIndex: number, board: Board, setBoard: React.Dispatch<React.SetStateAction<Board>> }) => {
+const Row = ({ p, rowIndex, board, setBoard }: { p: Winner, rowIndex: number, board: Board, setBoard: React.Dispatch<React.SetStateAction<Board>> }) => {
   return (
     <div className='flex gap-3 min-h-10 m-3 border border-5'>
       {/* returns squares for each row */}
       {board[rowIndex].map(
         (moveStr: string, mvIndex: number) => {
-          return (<Move board={board} setBoard={setBoard} move={moveStr} rowIndex={rowIndex} mvIndex={mvIndex} />)
+          return (<Move p={p} board={board} setBoard={setBoard} move={moveStr} rowIndex={rowIndex} mvIndex={mvIndex} />)
         })}
     </div>
   )
@@ -158,13 +158,18 @@ const Row = ({ rowIndex, board, setBoard }: { rowIndex: number, board: Board, se
 const Board = () => {
 
   const [board, setBoard] = useState<Board>(initialBoard)
-
+  const [p, setPlayer] = useState<Winner>("O")
   // renders one row of the board
+
+  useEffect(() => {
+    console.log("board clicked!")
+    p === "O" ? setPlayer("X") : setPlayer("O")
+  }, [board])
 
   return (
     <>
       {board.map((element, index: number) => {
-        return (<Row board={board} setBoard={setBoard} rowIndex={index} />)
+        return (<Row p={p} board={board} setBoard={setBoard} rowIndex={index} />)
       })}
 
     </>
