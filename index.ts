@@ -1,12 +1,12 @@
 import { checkWinCondition } from "./src/App"
 import { Winner } from "./src/App"
 
-const testBoard = [
+export const myBoard = [
     ['O', '', 'O'],
     ['', 'O', ''],
     ['X', '', 'O']
 ] satisfies Winner[][]
 
-const winState = checkWinCondition(testBoard)
+const winState = checkWinCondition(myBoard)
 
 console.log(winState)

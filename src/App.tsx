@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import './App.css'
 
-const reactBoard = [
+
+const testBoard = [
   ['X', 'O', ''],
-  ['', '', ''],
-  ['', '', '']
+  ['X', 'X', ''],
+  ['O', '', 'X']
 ] satisfies Winner[][]
 
 export type Winner = "X" | "O" | "";
@@ -15,7 +16,7 @@ type WinState = {
 }
 
 
-export const checkWinCondition = (b: typeof reactBoard): WinState => {
+export const checkWinCondition = (b: typeof testBoard): WinState => {
   // check rows for equivalence
   // check columns for equivalence
   // check diagonals for equivalence
@@ -130,6 +131,8 @@ function renderMove(move: string, idx: number) {
 
 }
 
+
+
 const Board = () => {
 
   // renders one row of the board
@@ -138,15 +141,15 @@ const Board = () => {
     <>
       {/* row */}
       <div className='flex gap-3'>
-        {reactBoard[0].map(renderMove)}
+        {testBoard[0].map(renderMove)}
       </div>
       {/* row */}
       <div className='flex gap-3'>
-        {reactBoard[1].map(renderMove)}
+        {testBoard[1].map(renderMove)}
       </div>
       {/* row */}
       <div className='flex gap-3'>
-        {reactBoard[2].map(renderMove)}
+        {testBoard[2].map(renderMove)}
       </div>
     </>
   )
@@ -156,7 +159,7 @@ const Board = () => {
 }
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [winState, setWinState] = useState<WinState>({ outcome: null, winner: "" })
 
   // pass the board row
   // render the board element
@@ -166,6 +169,13 @@ function App() {
 
       Insert Tic Tac Toe Here
       <Board />
+      <button onClick={() => setWinState(checkWinCondition(testBoard))}>Check Win</button>
+      <p>
+        Outcome: {winState.outcome}
+      </p>
+      <p>
+        Winner: {winState.winner}
+      </p>
     </>
   )
 }
