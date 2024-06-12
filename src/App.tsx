@@ -193,7 +193,7 @@ const Board = () => {
   const [winState, setWinState] = useState<WinState>({ outcome: null, winner: "" })
 
 
-  const [board, setBoard] = useState<Board>(initialBoard)
+  const [board, setBoard] = useState<Board>(structuredClone(initialBoard))
   const [p, setPlayer] = useState<Winner>("O")
   // renders one row of the board
 
@@ -213,7 +213,7 @@ const Board = () => {
         return (<Row p={p} board={board} setBoard={setBoard} rowIndex={index} />)
       })}
 
-      <button onClick={() => setWinState(checkWinCondition(initialBoard))}>Check Win</button>
+      <button onClick={() => { setBoard(structuredClone(initialBoard)) }}>Restart</button >
       <p>
         Outcome: {winState.outcome}
       </p>
@@ -236,7 +236,7 @@ function App() {
   return (
     <>
 
-      Insert Tic Tac Toe Here
+      Tic Tac Toe
       <Board />
 
     </>
