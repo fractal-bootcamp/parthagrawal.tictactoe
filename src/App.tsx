@@ -23,6 +23,7 @@ type MoveProps = {
   rowIndex: number
   mvIndex: number
   myToken: PlayerToken
+  winState: WinState
 }
 
 const GAME_ID = 123123
@@ -35,12 +36,11 @@ const myToken: PlayerToken = "O"
  * @returns 
  */
 
-const Move = ({ myToken, rowIndex, mvIndex }: MoveProps) => {
+const Move = ({ winState, myToken, rowIndex, mvIndex }: MoveProps) => {
 
   const [move, setMove] = useState<Move>("")
   const [step, setStep] = useState(0)
   const [forbidden, setForbidden] = useState(false)
-  const [winState, setWinState] = useState<WinState>({ outcome: null, winner: "" })
 
   const goodColor = '#a1a1aa'
   const forbiddenColor = '#f87171'
@@ -58,8 +58,6 @@ const Move = ({ myToken, rowIndex, mvIndex }: MoveProps) => {
     // console.log("ayo", serverBoard)
     // console.log("ayo step", step)
     setMove(serverBoard[rowIndex][mvIndex])
-    const winResponse = await fetch(`http://localhost:4000/game/${GAME_ID}/checkWin`)
-    setWinState(await winResponse.json())
 
 
 
@@ -123,13 +121,13 @@ const Move = ({ myToken, rowIndex, mvIndex }: MoveProps) => {
 
 
 
-const Row = ({ myToken, rowIndex, board, setBoard }: { myToken: PlayerToken, rowIndex: number, board: Board, setBoard: React.Dispatch<React.SetStateAction<Board>> }) => {
+const Row = ({ winState, myToken, rowIndex, board, setBoard }: { winState: WinState, myToken: PlayerToken, rowIndex: number, board: Board, setBoard: React.Dispatch<React.SetStateAction<Board>> }) => {
   return (
     <div className='flex gap-3 min-h-10 m-3 '>
       {/* returns squares for each row */}
       {board[rowIndex].map(
         (_moveStr: string, mvIndex: number) => {
-          return (<Move myToken={myToken} board={board} setBoard={setBoard} rowIndex={rowIndex} mvIndex={mvIndex} />)
+          return (<Move winState={winState} myToken={myToken} board={board} setBoard={setBoard} rowIndex={rowIndex} mvIndex={mvIndex} />)
         })}
     </div>
   )
@@ -141,8 +139,30 @@ const Board = () => {
 
 
   const [myToken, setToken] = useState<PlayerToken>('X')
+  const [winState, setWinState] = useState<WinState>({ outcome: null, winner: "" })
 
+
+  const [winStep, setWinStep] = useState(0)
   const [board, setBoard] = useState<Board>(structuredClone(initialBoard))
+
+
+  const checkWinClock = async () => {
+
+    const winResponse = await fetch(`http://localhost:4000/game/${GAME_ID}/checkWin`)
+    setWinState(await winResponse.json())
+
+  }
+
+  useEffect(() => {
+    if (winState.outcome === null) {
+      checkWinClock()
+      setTimeout(() => setWinStep(winStep + 1), 500)
+    }
+    console.log(winState)
+
+  }, [winStep])
+
+
   // renders one row of the board
 
   // useEffect(() => {
@@ -168,7 +188,7 @@ const Board = () => {
         Select O
       </button>
       {board.map((_element, index: number) => {
-        return (<Row myToken={myToken} board={board} setBoard={setBoard} rowIndex={index} />)
+        return (<Row winState={winState} myToken={myToken} board={board} setBoard={setBoard} rowIndex={index} />)
       })}
 
       <button onClick={() => { setBoard(structuredClone(initialBoard)) }}>Restart</button >
