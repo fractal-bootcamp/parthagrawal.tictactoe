@@ -193,21 +193,16 @@ const Board = () => {
 
       <button onClick={() => { setBoard(structuredClone(initialBoard)) }}>Restart</button >
       <p>
-        {/* Outcome: {winState.outcome} */}
+        Outcome: {winState.outcome}
       </p>
       <p>
-        {/* Winner: {winState.winner} */}
+        Winner: {winState.winner}
       </p>
       <p>
-        {/* Current token: {myToken} */}
+        My token: {myToken}
       </p>
 
-      <button onClick={async () => {
-        const resp = await fetch("http://localhost:4000/game/123123")
-        console.log(await resp.json())
-      }}>
-        get board
-      </button >
+
 
     </>
   )
