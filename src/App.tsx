@@ -175,10 +175,28 @@ const myToken: PlayerToken = "O"
 const Move = ({ myToken, rowIndex, mvIndex }: MoveProps) => {
 
   const [move, setMove] = useState<Move>("")
+  const [step, setStep] = useState(0)
 
   // create a clock that does a get request of the board
   // every 1s. then it hits the state hook to setMove based on
   // whatever it retrieves at that index
+
+
+  const getMoveFromServer = async () => {
+    const response = await fetch(`http://localhost:4000/game/${GAME_ID}`)
+    const jsonResponse = await response.json()
+    const serverBoard = jsonResponse.game.data.board
+    console.log("ayo", serverBoard)
+    setMove(serverBoard[rowIndex][mvIndex])
+
+
+  }
+  useEffect(() => {
+    //if(win ===null )
+    getMoveFromServer()
+    setTimeout(() => setStep(step + 1), 1000)
+
+  }, [step])
 
   /**
    * implement a hook that calls the server x
