@@ -186,15 +186,18 @@ const Move = ({ myToken, rowIndex, mvIndex }: MoveProps) => {
     const response = await fetch(`http://localhost:4000/game/${GAME_ID}`)
     const jsonResponse = await response.json()
     const serverBoard = jsonResponse.game.data.board
-    console.log("ayo", serverBoard)
+    // console.log("ayo", serverBoard)
+    // console.log("ayo step", step)
+
     setMove(serverBoard[rowIndex][mvIndex])
 
 
   }
   useEffect(() => {
     //if(win ===null )
+    console.log('in useeffect')
     getMoveFromServer()
-    setTimeout(() => setStep(step + 1), 1000)
+    setTimeout(() => setStep(step + 1), 500)
 
   }, [step])
 
@@ -258,25 +261,25 @@ const Board = () => {
   const [p, setPlayer] = useState<Move>("O")
   // renders one row of the board
 
-  useEffect(() => {
-    console.log("board clicked!")
-    p === "O" ? setPlayer("X") : setPlayer("O")
-  }, [board])
+  // useEffect(() => {
+  //   console.log("board clicked!")
+  //   p === "O" ? setPlayer("X") : setPlayer("O")
+  // }, [board])
 
-  useEffect(() => {
-    console.log("checking win:")
-    setWinState(checkWinCondition(board))
-  }, [board])
+  // useEffect(() => {
+  //   console.log("checking win:")
+  //   setWinState(checkWinCondition(board))
+  // }, [board])
 
   return (
     <>
       <button onClick={() => {
-        setToken('X'); console.log(myToken)
+        setToken('X');
       }}>
         Select X
       </button>
       <button onClick={() => {
-        setToken('O'); console.log(myToken)
+        setToken('O');
       }}>
         Select O
       </button>
@@ -290,6 +293,9 @@ const Board = () => {
       </p>
       <p>
         Winner: {winState.winner}
+      </p>
+      <p>
+        Current token: {myToken}
       </p>
 
       <button onClick={async () => {
@@ -308,13 +314,11 @@ const Board = () => {
 
 function App() {
 
-  // pass the board row
-  // render the board element
 
   return (
     <>
 
-      Tic Tac Toe
+
       <Board />
 
     </>

@@ -83,6 +83,10 @@ app.post('/game/:gameId/move', verifyMove, (req, res) => {
 
 })
 
+app.post('/game/:gameId/reset', (req, res) => {
+    const gameId = req.params.gameId
+})
+
 
 app.get('/game/:gameId', (req, res) => {
 

@@ -54,6 +54,9 @@ const GameService = (games: Game[]) => {
                         },
                     }
                 }
+                else {
+                    return { "status": 403, "output": "It's not your move!" }
+                }
             }
             return { "status": 404, "output": 'Game not found' }
 
