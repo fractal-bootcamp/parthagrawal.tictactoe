@@ -79,7 +79,7 @@ app.post('/game/:gameId/move', verifyMove, (req, res) => {
 
     const response = GameService(games).makeMove(game, token, row, column)
 
-    res.status(response.status).send(response.output)
+    res.status(response.status).json(response.data)
 
 })
 

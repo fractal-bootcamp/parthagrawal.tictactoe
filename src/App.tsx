@@ -159,11 +159,11 @@ type MoveProps = {
   setBoard: React.Dispatch<React.SetStateAction<Board>>
   rowIndex: number
   mvIndex: number
-  p: Move
+  myToken: PlayerToken
 }
 
 const GAME_ID = 123123
-const myToken: PlayerToken = "X"
+const myToken: PlayerToken = "O"
 
 /** TODO
  * allow user to specify game id and select from a lobby
@@ -172,7 +172,7 @@ const myToken: PlayerToken = "X"
  * @returns 
  */
 
-const Move = ({ p, rowIndex, mvIndex }: MoveProps) => {
+const Move = ({ myToken, rowIndex, mvIndex }: MoveProps) => {
 
   const [move, setMove] = useState<Move>("")
 
@@ -194,8 +194,9 @@ const Move = ({ p, rowIndex, mvIndex }: MoveProps) => {
 
       })
       const jsonResponse = await response.json()
+      console.log("hey")
       console.log(jsonResponse)
-      setMove(jsonResponse.game.data.board[rowIndex][mvIndex])
+      setMove(jsonResponse.board[rowIndex][mvIndex])
 
     }} className='flex w-10 h-10 bg-slate-400  items-center justify-center'>
       {/* NEED TO SHIFT THIS TO DISPLAY THE RESPONSE */}
@@ -207,13 +208,13 @@ const Move = ({ p, rowIndex, mvIndex }: MoveProps) => {
 
 
 
-const Row = ({ p, rowIndex, board, setBoard }: { p: Move, rowIndex: number, board: Board, setBoard: React.Dispatch<React.SetStateAction<Board>> }) => {
+const Row = ({ myToken, rowIndex, board, setBoard }: { myToken: PlayerToken, rowIndex: number, board: Board, setBoard: React.Dispatch<React.SetStateAction<Board>> }) => {
   return (
     <div className='flex gap-3 min-h-10 m-3 '>
       {/* returns squares for each row */}
       {board[rowIndex].map(
         (_moveStr: string, mvIndex: number) => {
-          return (<Move p={p} board={board} setBoard={setBoard} rowIndex={rowIndex} mvIndex={mvIndex} />)
+          return (<Move myToken={myToken} board={board} setBoard={setBoard} rowIndex={rowIndex} mvIndex={mvIndex} />)
         })}
     </div>
   )
@@ -225,6 +226,7 @@ const Board = () => {
 
   const [winState, setWinState] = useState<WinState>({ outcome: null, winner: "" })
 
+  const [myToken, setToken] = useState<PlayerToken>('X')
 
   const [board, setBoard] = useState<Board>(structuredClone(initialBoard))
   const [p, setPlayer] = useState<Move>("O")
@@ -242,8 +244,18 @@ const Board = () => {
 
   return (
     <>
+      <button onClick={() => {
+        setToken('X'); console.log(myToken)
+      }}>
+        Select X
+      </button>
+      <button onClick={() => {
+        setToken('O'); console.log(myToken)
+      }}>
+        Select O
+      </button>
       {board.map((_element, index: number) => {
-        return (<Row p={p} board={board} setBoard={setBoard} rowIndex={index} />)
+        return (<Row myToken={myToken} board={board} setBoard={setBoard} rowIndex={index} />)
       })}
 
       <button onClick={() => { setBoard(structuredClone(initialBoard)) }}>Restart</button >

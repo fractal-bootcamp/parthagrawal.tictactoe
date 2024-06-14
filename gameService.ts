@@ -27,7 +27,7 @@ const GameService = (games: Game[]) => {
             return games.find((elem) => { return elem.id === gameId })
         },
 
-        makeMove: (game: Game, token: PlayerToken, r: number, c: number): { status: number, output: string } => {
+        makeMove: (game: Game, token: PlayerToken, r: number, c: number) => {
 
 
             if (game) {
@@ -45,11 +45,17 @@ const GameService = (games: Game[]) => {
                     GameService(games).switchPlayer(game)
                     console.log("switched player")
                     console.log("board: " + game.data.board)
-                    return { status: 200, output: ("board: " + game.data.board + " current player: " + game.data.currentPlayer) }
+                    return {
+                        "status": 200,
+                        "data": {
 
+                            "board": game.data.board, "currentPlayer": game.data.currentPlayer
+                            , "output": "successful move"
+                        },
+                    }
                 }
             }
-            return { status: 404, output: 'Game not found' }
+            return { "status": 404, "output": 'Game not found' }
 
         },
         switchPlayer: (game: Game) => {
