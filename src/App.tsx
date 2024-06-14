@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 
 
-type Board = Winner[][]
+type Board = Move[][]
 
 const initialBoard: Board = [
   ['', '', ''],
@@ -10,11 +10,11 @@ const initialBoard: Board = [
   ['', '', '']
 ]
 
-export type Winner = "X" | "O" | "";
+export type Move = "X" | "O" | "";
 
 type WinState = {
   outcome: "WIN" | "TIE" | null;
-  winner: Winner;
+  winner: Move;
 }
 
 
@@ -24,30 +24,30 @@ export const checkWinCondition = (b: typeof initialBoard): WinState => {
   // check diagonals for equivalence
 
   for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
-    const winner: Winner = checkRow(b[rowIndex])
+    const winner: Move = checkRow(b[rowIndex])
     if (winner) {
       return { outcome: !!winner ? "WIN" : null, winner: winner }
     }
   }
 
   for (let c = 0; c < 3; c++) {
-    const winner: Winner = checkColumn([b[0][c], b[1][c], b[2][c]])
+    const winner: Move = checkColumn([b[0][c], b[1][c], b[2][c]])
     if (winner) {
 
       return { outcome: !!winner ? "WIN" : null, winner: winner }
     }
   }
-  const diag1Winner: Winner = checkDiagonalOne([b[0][0], b[1][1], b[2][2]])
+  const diag1Winner: Move = checkDiagonalOne([b[0][0], b[1][1], b[2][2]])
   if (diag1Winner) {
     return { outcome: !!diag1Winner ? "WIN" : null, winner: diag1Winner }
   }
 
-  const diag2Winner: Winner = checkDiagonalTwo([b[2][0], b[1][1], b[0][2]])
+  const diag2Winner: Move = checkDiagonalTwo([b[2][0], b[1][1], b[0][2]])
   if (diag2Winner) {
     return { outcome: !!diag2Winner ? "WIN" : null, winner: diag2Winner }
   }
 
-  function checkRow(row: Winner[]): Winner {
+  function checkRow(row: Move[]): Move {
     const winner = row.reduce((prev, curr) => {
       if (prev === "") {
         return "";
@@ -63,8 +63,8 @@ export const checkWinCondition = (b: typeof initialBoard): WinState => {
 
   }
 
-  function checkColumn(col: Winner[]): Winner {
-    const winner: Winner = col.reduce((prev, curr) => {
+  function checkColumn(col: Move[]): Move {
+    const winner: Move = col.reduce((prev, curr) => {
       if (prev === "") {
         return "";
       }
@@ -77,8 +77,8 @@ export const checkWinCondition = (b: typeof initialBoard): WinState => {
 
   }
 
-  function checkDiagonalOne(diag: Winner[]): Winner {
-    const winner: Winner = diag.reduce((prev, curr) => {
+  function checkDiagonalOne(diag: Move[]): Move {
+    const winner: Move = diag.reduce((prev, curr) => {
       if (prev === "") {
         return "";
       }
@@ -90,8 +90,8 @@ export const checkWinCondition = (b: typeof initialBoard): WinState => {
     return winner;
 
   }
-  function checkDiagonalTwo(diag: Winner[]): Winner {
-    const winner: Winner = diag.reduce((prev, curr) => {
+  function checkDiagonalTwo(diag: Move[]): Move {
+    const winner: Move = diag.reduce((prev, curr) => {
       if (prev === "") {
         return "";
       }
@@ -158,7 +158,7 @@ type MoveProps = {
   setBoard: React.Dispatch<React.SetStateAction<Board>>
   rowIndex: number
   mvIndex: number
-  p: Winner
+  p: Move
 }
 const Move = ({ p, board, setBoard, rowIndex, mvIndex }: MoveProps) => {
 
@@ -176,7 +176,7 @@ const Move = ({ p, board, setBoard, rowIndex, mvIndex }: MoveProps) => {
   )
 }
 
-const Row = ({ p, rowIndex, board, setBoard }: { p: Winner, rowIndex: number, board: Board, setBoard: React.Dispatch<React.SetStateAction<Board>> }) => {
+const Row = ({ p, rowIndex, board, setBoard }: { p: Move, rowIndex: number, board: Board, setBoard: React.Dispatch<React.SetStateAction<Board>> }) => {
   return (
     <div className='flex gap-3 min-h-10 m-3 '>
       {/* returns squares for each row */}
@@ -196,7 +196,7 @@ const Board = () => {
 
 
   const [board, setBoard] = useState<Board>(structuredClone(initialBoard))
-  const [p, setPlayer] = useState<Winner>("O")
+  const [p, setPlayer] = useState<Move>("O")
   // renders one row of the board
 
   useEffect(() => {

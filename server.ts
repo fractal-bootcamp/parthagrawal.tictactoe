@@ -1,6 +1,8 @@
-import express from "express";
+import express, { RequestHandler } from "express";
 import cors from "cors";
 import { useState } from "react";
+
+import GameService, { Game, PlayerToken } from "./gameService"
 
 const app = express();
 
@@ -9,8 +11,13 @@ app.use(express.json());
 
 app.use(cors())
 
-const initialBoard = ['', '', '', '', '', '', '', '', '']
+// const initialBoard = ['', '', '', '', '', '', '', '', '']
 
+const initialBoard = [
+    ['', '', '',],
+    ['', '', '',],
+    ['', '', '',]
+]
 
 let games: Game[] = [{
     id: '123123', data: {
@@ -21,67 +28,57 @@ let games: Game[] = [{
     }
 }]
 
+
+type Position = {
+    row: number,
+    column: number
+
+}
+
 app.get("/", (req, res) => {
     res.send("hello world")
 })
 
-function findGame(gameId: string) {
-    return games.find((elem) => { return elem.id === gameId })
+const verifyMove: RequestHandler = (req, res, next) => {
+    const pos = req.body.position;
 
-}
-
-type PlayerToken = 'X' | 'O'
-
-type Game = {
-    id: string
-    data: {
-        board: string[],
-        currentPlayer: PlayerToken,
-        player1: {
-            token: PlayerToken,
-            id: string
-        }
-        player2: {
-            token: PlayerToken,
-            id: string
-        }
-    }
-}
-
-function switchPlayer(game: Game) {
-    if (game.data.currentPlayer === 'X') {
-        return game.data.currentPlayer = 'O'
-    }
-    else {
-        return game.data.currentPlayer = 'X'
+    if (isNaN(pos.row) || isNaN(pos.column)) {
+        return res.status(400).json({ error: "Expecting row and col in position argument." })
     }
 
+    next();
 }
+
 /** 
  * move: {
  *  position
  * }
  */
-app.post('/game/:gameId/move', (req, res) => {
+app.post('/game/:gameId/move', verifyMove, (req, res) => {
     const gameId = req.params.gameId
-    const game = findGame(gameId)
-    if (game) {
-        const token = req.body.playerToken
-        const pos = req.body.position
+    const game = GameService(games).findGame(gameId)
+    console.log('game found' + game)
 
-        if (req.body.playerToken === game.data.currentPlayer) {
-            game.data.board[pos] = token;
-            switchPlayer(game)
-            console.log("board: " + game.data.board)
-            res.send("board: " + game.data.board + " current player: " + game.data.currentPlayer)
-
-
-        }
-    }
-    else {
+    if (!game) {
         return res.status(404).send('Game not found')
     }
 
+    // controller (actions) sends data to the service (calculations)
+
+    // more functional to parse request in controller or the service?
+
+
+    const token: PlayerToken = req.body.playerToken
+
+    const { row }: Position = req.body.position
+    const { column }: Position = req.body.position
+
+    console.log("token:" + token)
+    console.log("body:" + JSON.stringify(req.body))
+
+    const response = GameService(games).makeMove(game, token, row, column)
+
+    res.status(response.status).send(response.output)
 
 })
 
@@ -100,7 +97,7 @@ app.get('/game/:gameId', (req, res) => {
     //      client-side validation ('you're not the current player')
     // render the game at the id 
     const id = req.params.gameId;
-    const game = findGame(id)
+    const game = GameService(games).findGame(id)
     console.log("game found: " + game)
 
     /**
