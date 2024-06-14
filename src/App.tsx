@@ -176,6 +176,14 @@ const Move = ({ myToken, rowIndex, mvIndex }: MoveProps) => {
 
   const [move, setMove] = useState<Move>("")
 
+  // create a clock that does a get request of the board
+  // every 1s. then it hits the state hook to setMove based on
+  // whatever it retrieves at that index
+
+  /**
+   * implement a hook that calls the server x
+   */
+
   return (
     <button onClick={async () => {
       console.log(GAME_ID)
