@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import { PlayerToken } from '../gameService';
+import GameService, { PlayerToken } from '../gameService';
 
 
 type Board = Move[][]
@@ -176,6 +176,10 @@ const Move = ({ myToken, rowIndex, mvIndex }: MoveProps) => {
 
   const [move, setMove] = useState<Move>("")
   const [step, setStep] = useState(0)
+  const [forbidden, setForbidden] = useState(false)
+
+  const goodColor = '#a1a1aa'
+  const forbiddenColor = '#f87171'
 
   // create a clock that does a get request of the board
   // every 1s. then it hits the state hook to setMove based on
@@ -183,6 +187,7 @@ const Move = ({ myToken, rowIndex, mvIndex }: MoveProps) => {
 
 
   const getMoveFromServer = async () => {
+    setForbidden(false)
     const response = await fetch(`http://localhost:4000/game/${GAME_ID}`)
     const jsonResponse = await response.json()
     const serverBoard = jsonResponse.game.data.board
@@ -208,6 +213,7 @@ const Move = ({ myToken, rowIndex, mvIndex }: MoveProps) => {
   return (
     <button onClick={async () => {
       console.log(GAME_ID)
+
       const response = await fetch(`http://localhost:4000/game/${GAME_ID}/move`, {
         method: "POST",
         headers: {
@@ -222,15 +228,25 @@ const Move = ({ myToken, rowIndex, mvIndex }: MoveProps) => {
         })
 
       })
+
+      if (response.status === 403 || 404) {
+        setForbidden(true)
+      }
+
+
+      console.log(forbidden)
+
       const jsonResponse = await response.json()
       console.log("hey")
       console.log(jsonResponse)
+
       setMove(jsonResponse.board[rowIndex][mvIndex])
 
-    }} className='flex w-10 h-10 bg-slate-400  items-center justify-center'>
+
+    }} className='flex w-10 h-10 items-center justify-center' style={{ 'backgroundColor': forbidden ? forbiddenColor : goodColor }}>
       {/* NEED TO SHIFT THIS TO DISPLAY THE RESPONSE */}
       {move}
-    </button>
+    </button >
   )
 }
 
@@ -258,7 +274,6 @@ const Board = () => {
   const [myToken, setToken] = useState<PlayerToken>('X')
 
   const [board, setBoard] = useState<Board>(structuredClone(initialBoard))
-  const [p, setPlayer] = useState<Move>("O")
   // renders one row of the board
 
   // useEffect(() => {
