@@ -6,6 +6,12 @@ export type WinState = {
     winner: PlayerToken;
 }
 
+const initialBoard = [
+    ['', '', ''],
+    ['', '', ''],
+    ['', '', '']
+]
+
 export type Game = {
     id: string
     data: {
@@ -209,6 +215,10 @@ const GameService = (games: Game[]) => {
             // win, tie, or neither
             // who won? (X/O/null)
 
+        },
+
+        resetGame: (game: Game) => {
+            game.data.board = structuredClone(initialBoard)
         }
 
 

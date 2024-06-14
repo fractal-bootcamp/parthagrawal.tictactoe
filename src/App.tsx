@@ -65,12 +65,12 @@ const Move = ({ winState, myToken, rowIndex, mvIndex }: MoveProps) => {
   }
   useEffect(() => {
     //if(win ===null )
-    console.log('in useeffect')
+    // console.log('in useeffect')
     if (winState.outcome === null) {
       getMoveFromServer()
       setTimeout(() => setStep(step + 1), 500)
     }
-    console.log(winState)
+    // console.log(winState)
 
   }, [step])
 
@@ -106,7 +106,7 @@ const Move = ({ winState, myToken, rowIndex, mvIndex }: MoveProps) => {
 
       const jsonResponse = await response.json()
       console.log("hey")
-      console.log(jsonResponse)
+      // console.log(jsonResponse)
 
       setMove(jsonResponse.board[rowIndex][mvIndex])
 
@@ -191,7 +191,11 @@ const Board = () => {
         return (<Row winState={winState} myToken={myToken} board={board} setBoard={setBoard} rowIndex={index} />)
       })}
 
-      <button onClick={() => { setBoard(structuredClone(initialBoard)) }}>Restart</button >
+      <button onClick={async () => {
+        await fetch(`http://localhost:4000/game/${GAME_ID}/reset`)
+        console.log("restart clicked")
+
+      }}>Restart</button >
       <p>
         Outcome: {winState.outcome}
       </p>

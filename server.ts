@@ -98,6 +98,11 @@ app.get('/game/:gameId/checkWin', (req, res) => {
 
 })
 
+app.get('/game/:gameId/reset', (req, res) => {
+    const gameId = req.params.gameId
+    const game = GameService(games).findGame(gameId)
+    if (game) GameService(games).resetGame(game);
+})
 app.get('/game/:gameId', (req, res) => {
 
     // make game serverside first, so you can play the game via curl commands
