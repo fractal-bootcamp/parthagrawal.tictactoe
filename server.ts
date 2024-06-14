@@ -9,9 +9,12 @@ app.use(express.json());
 
 app.use(cors())
 
-let games = [{
+const initialBoard = ['', '', '', '', '', '', '', '', '']
+
+
+let games: Game[] = [{
     id: '123123', data: {
-        board: [],
+        board: initialBoard,
         currentPlayer: "X",
         player1: { token: 'X', id: '' },
         player2: { token: 'O', id: '' }
@@ -22,17 +25,66 @@ app.get("/", (req, res) => {
     res.send("hello world")
 })
 
+function findGame(gameId: string) {
+    return games.find((elem) => { return elem.id === gameId })
+
+}
+
+type PlayerToken = 'X' | 'O'
+
+type Game = {
+    id: string
+    data: {
+        board: string[],
+        currentPlayer: PlayerToken,
+        player1: {
+            token: PlayerToken,
+            id: string
+        }
+        player2: {
+            token: PlayerToken,
+            id: string
+        }
+    }
+}
+
+function switchPlayer(game: Game) {
+    if (game.data.currentPlayer === 'X') {
+        return game.data.currentPlayer = 'O'
+    }
+    else {
+        return game.data.currentPlayer = 'X'
+    }
+
+}
+/** 
+ * move: {
+ *  position
+ * }
+ */
 app.post('/game/:gameId/move', (req, res) => {
     const gameId = req.params.gameId
-    const game = games.find((elem) => { return elem.id === gameId })
+    const game = findGame(gameId)
+    if (game) {
+        const token = req.body.playerToken
+        const pos = req.body.position
 
-    if (req.body.playerToken === game?.data.currentPlayer) {
+        if (req.body.playerToken === game.data.currentPlayer) {
+            game.data.board[pos] = token;
+            switchPlayer(game)
+            console.log("board: " + game.data.board)
+            res.send("board: " + game.data.board + " current player: " + game.data.currentPlayer)
 
+
+        }
     }
+    else {
+        return res.status(404).send('Game not found')
+    }
+
 
 })
 
-const initialBoard = ['', '', '', '', '', '', '', '', '']
 
 app.get('/game/:gameId', (req, res) => {
 
@@ -47,9 +99,8 @@ app.get('/game/:gameId', (req, res) => {
     //      server-side validation.
     //      client-side validation ('you're not the current player')
     // render the game at the id 
-
     const id = req.params.gameId;
-    const game = games.find((elem) => { return elem.id === id })
+    const game = findGame(id)
     console.log("game found: " + game)
 
     /**
