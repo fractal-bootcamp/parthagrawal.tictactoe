@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import GameService, { PlayerToken } from '../gameService';
+import GameService, { PlayerToken, WinState } from '../gameService';
 
 
 type Board = Move[][]
@@ -13,146 +13,9 @@ const initialBoard: Board = [
 
 export type Move = "X" | "O" | "";
 
-type WinState = {
-  outcome: "WIN" | "TIE" | null;
-  winner: Move;
-}
-
-
-export const checkWinCondition = (b: typeof initialBoard): WinState => {
-  // check rows for equivalence
-  // check columns for equivalence
-  // check diagonals for equivalence
-
-  for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
-    const winner: Move = checkRow(b[rowIndex])
-    if (winner) {
-      return { outcome: !!winner ? "WIN" : null, winner: winner }
-    }
-  }
-
-  for (let c = 0; c < 3; c++) {
-    const winner: Move = checkColumn([b[0][c], b[1][c], b[2][c]])
-    if (winner) {
-
-      return { outcome: !!winner ? "WIN" : null, winner: winner }
-    }
-  }
-  const diag1Winner: Move = checkDiagonalOne([b[0][0], b[1][1], b[2][2]])
-  if (diag1Winner) {
-    return { outcome: !!diag1Winner ? "WIN" : null, winner: diag1Winner }
-  }
-
-  const diag2Winner: Move = checkDiagonalTwo([b[2][0], b[1][1], b[0][2]])
-  if (diag2Winner) {
-    return { outcome: !!diag2Winner ? "WIN" : null, winner: diag2Winner }
-  }
-
-  function checkRow(row: Move[]): Move {
-    const winner = row.reduce((prev, curr) => {
-      if (prev === "") {
-        return "";
-      }
-      if (prev === curr) {
-        return curr
-      }
-      return "";
-    })
-    return winner;
-
-    // return X O or null
-
-  }
-
-  function checkColumn(col: Move[]): Move {
-    const winner: Move = col.reduce((prev, curr) => {
-      if (prev === "") {
-        return "";
-      }
-      if (prev === curr) {
-        return curr
-      }
-      return "";
-    })
-    return winner;
-
-  }
-
-  function checkDiagonalOne(diag: Move[]): Move {
-    const winner: Move = diag.reduce((prev, curr) => {
-      if (prev === "") {
-        return "";
-      }
-      if (prev === curr) {
-        return curr
-      }
-      return "";
-    })
-    return winner;
-
-  }
-  function checkDiagonalTwo(diag: Move[]): Move {
-    const winner: Move = diag.reduce((prev, curr) => {
-      if (prev === "") {
-        return "";
-      }
-      if (prev === curr) {
-        return curr
-      }
-      return "";
-    })
-    return winner;
-
-  }
-
-  // tie condition
-  // const foundEmpty = b.findIndex(
-  //   (r) => {
-  //     r.findIndex(
-  //       (c) => { c === '' }) === -1
-  //   })
-  // console.log("foundEmpty: " + foundEmpty)
-
-
-  let tieFlag = true;
-  b.map((element) => {
-    if (element.includes('')) {
-      console.log('ayo')
-
-      tieFlag = false;
-      return;
-    }
-  })
-
-  if (tieFlag) {
-    return {
-      outcome: "TIE",
-      winner: ""
-    }
-  }
-  else {
-    return {
-      outcome: null,
-      winner: ""
-    }
-
-  }
 
 
 
-
-
-  // write a function to check one row, and then map through
-  // all the rows
-
-  //const winner = checkRow(b[0])
-
-
-  // x o
-  // win, tie, or neither
-  // who won? (X/O/null)
-
-}
 
 type MoveProps = {
   board: Board
@@ -177,6 +40,7 @@ const Move = ({ myToken, rowIndex, mvIndex }: MoveProps) => {
   const [move, setMove] = useState<Move>("")
   const [step, setStep] = useState(0)
   const [forbidden, setForbidden] = useState(false)
+  const [winState, setWinState] = useState<WinState>({ outcome: null, winner: "" })
 
   const goodColor = '#a1a1aa'
   const forbiddenColor = '#f87171'
@@ -193,16 +57,22 @@ const Move = ({ myToken, rowIndex, mvIndex }: MoveProps) => {
     const serverBoard = jsonResponse.game.data.board
     // console.log("ayo", serverBoard)
     // console.log("ayo step", step)
-
     setMove(serverBoard[rowIndex][mvIndex])
+    const winResponse = await fetch(`http://localhost:4000/game/${GAME_ID}/checkWin`)
+    setWinState(await winResponse.json())
+
+
 
 
   }
   useEffect(() => {
     //if(win ===null )
     console.log('in useeffect')
-    getMoveFromServer()
-    setTimeout(() => setStep(step + 1), 500)
+    if (winState.outcome === null) {
+      getMoveFromServer()
+      setTimeout(() => setStep(step + 1), 500)
+    }
+    console.log(winState)
 
   }, [step])
 
@@ -269,7 +139,6 @@ const Row = ({ myToken, rowIndex, board, setBoard }: { myToken: PlayerToken, row
 
 const Board = () => {
 
-  const [winState, setWinState] = useState<WinState>({ outcome: null, winner: "" })
 
   const [myToken, setToken] = useState<PlayerToken>('X')
 
@@ -304,13 +173,13 @@ const Board = () => {
 
       <button onClick={() => { setBoard(structuredClone(initialBoard)) }}>Restart</button >
       <p>
-        Outcome: {winState.outcome}
+        {/* Outcome: {winState.outcome} */}
       </p>
       <p>
-        Winner: {winState.winner}
+        {/* Winner: {winState.winner} */}
       </p>
       <p>
-        Current token: {myToken}
+        {/* Current token: {myToken} */}
       </p>
 
       <button onClick={async () => {

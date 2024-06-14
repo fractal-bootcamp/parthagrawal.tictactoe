@@ -55,7 +55,7 @@ const verifyMove: RequestHandler = (req, res, next) => {
  * }
  */
 app.post('/game/:gameId/move', verifyMove, (req, res) => {
-    console.log(req)
+    // console.log(req)
     const gameId = req.params.gameId
     const game = GameService(games).findGame(gameId)
     console.log('game found' + game)
@@ -74,8 +74,8 @@ app.post('/game/:gameId/move', verifyMove, (req, res) => {
     const { row }: Position = req.body.position
     const { column }: Position = req.body.position
 
-    console.log("token:" + token)
-    console.log("body:" + JSON.stringify(req.body))
+    // console.log("token:" + token)
+    // console.log("body:" + JSON.stringify(req.body))
 
     const response = GameService(games).makeMove(game, token, row, column)
 
@@ -87,6 +87,16 @@ app.post('/game/:gameId/reset', (req, res) => {
     const gameId = req.params.gameId
 })
 
+app.get('/game/:gameId/checkWin', (req, res) => {
+    const gameId = req.params.gameId
+    const game = GameService(games).findGame(gameId)
+
+    if (game) {
+        res.json(GameService(games).checkWinCondition(game))
+    }
+
+
+})
 
 app.get('/game/:gameId', (req, res) => {
 
