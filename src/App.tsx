@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import { PlayerToken } from '../gameService';
 
 
 type Board = Move[][]
@@ -160,21 +161,51 @@ type MoveProps = {
   mvIndex: number
   p: Move
 }
-const Move = ({ p, board, setBoard, rowIndex, mvIndex }: MoveProps) => {
+
+const GAME_ID = 123123
+const myToken: PlayerToken = "X"
+
+/** TODO
+ * allow user to specify game id and select from a lobby
+ * select playertoken dynamically (randomly) and pass to 
+ * @param param0 
+ * @returns 
+ */
+
+const Move = ({ p, rowIndex, mvIndex }: MoveProps) => {
+
+  const [move, setMove] = useState<Move>("")
 
   return (
-    <button onClick={() => {
-      if (board[rowIndex][mvIndex] === "") {
-        console.log("click")
-        const newBoard = [...board];
-        newBoard[rowIndex].splice(mvIndex, 1, p) // QUESTION: ok? 
-        setBoard(newBoard)
-      }
+    <button onClick={async () => {
+      console.log(GAME_ID)
+      const response = await fetch(`http://localhost:4000/game/${GAME_ID}/move`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "playerToken": myToken,
+          "position": {
+            "row": rowIndex,
+            "column": mvIndex
+          }
+        })
+
+      })
+      const jsonResponse = await response.json()
+      console.log(jsonResponse)
+      setMove(jsonResponse.game.data.board[rowIndex][mvIndex])
+
     }} className='flex w-10 h-10 bg-slate-400  items-center justify-center'>
-      {board[rowIndex][mvIndex]}
+      {/* NEED TO SHIFT THIS TO DISPLAY THE RESPONSE */}
+      {move}
     </button>
   )
 }
+
+
+
 
 const Row = ({ p, rowIndex, board, setBoard }: { p: Move, rowIndex: number, board: Board, setBoard: React.Dispatch<React.SetStateAction<Board>> }) => {
   return (
@@ -222,6 +253,13 @@ const Board = () => {
       <p>
         Winner: {winState.winner}
       </p>
+
+      <button onClick={async () => {
+        const resp = await fetch("http://localhost:4000/game/123123")
+        console.log(await resp.json())
+      }}>
+        get board
+      </button >
 
     </>
   )
