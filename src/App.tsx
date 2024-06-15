@@ -78,6 +78,7 @@ const Move = ({ winState, myToken, rowIndex, mvIndex }: MoveProps) => {
 
   return (
     <button onClick={async () => {
+      setForbidden(false)
       console.log(GAME_ID)
 
       const response = await fetch(`http://localhost:4000/game/${GAME_ID}/move`, {
@@ -95,7 +96,7 @@ const Move = ({ winState, myToken, rowIndex, mvIndex }: MoveProps) => {
 
       })
 
-      if (response.status === 403 || 404) {
+      if (response.status === 403 || response.status === 404) {
         setForbidden(true)
       }
 

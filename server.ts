@@ -58,7 +58,6 @@ app.post('/game/:gameId/move', verifyMove, (req, res) => {
     // console.log(req)
     const gameId = req.params.gameId
     const game = GameService(games).findGame(gameId)
-    console.log('game found' + game)
 
     if (!game) {
         return res.status(404).send('Game not found')
