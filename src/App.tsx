@@ -32,8 +32,6 @@ const myToken: PlayerToken = "O"
 /** TODO
  * allow user to specify game id and select from a lobby
  * select playertoken dynamically (randomly) and pass to 
- * @param param0 
- * @returns 
  */
 
 const Move = ({ winState, myToken, rowIndex, mvIndex }: MoveProps) => {
@@ -192,7 +190,8 @@ const Board = () => {
       })}
 
       <button onClick={async () => {
-        await fetch(`http://localhost:4000/game/${GAME_ID}/reset`)
+        fetch(`http://localhost:4000/game/${GAME_ID}/reset`);
+        fetch(`http://localhost:4000/game/${GAME_ID}/checkWin`);
         console.log("restart clicked")
 
       }}>Restart</button >
