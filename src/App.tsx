@@ -191,9 +191,10 @@ const Board = () => {
       })}
 
       <button onClick={async () => {
-        fetch(`http://localhost:4000/game/${GAME_ID}/reset`);
-        fetch(`http://localhost:4000/game/${GAME_ID}/checkWin`);
-        console.log("restart clicked")
+        // debugger;
+        await fetch(`http://localhost:4000/game/${GAME_ID}/reset`);
+        setWinState({ outcome: null, winner: "" })
+        window.location.reload()
 
       }}>Restart</button >
       <p>

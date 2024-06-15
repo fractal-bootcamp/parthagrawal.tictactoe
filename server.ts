@@ -82,10 +82,6 @@ app.post('/game/:gameId/move', verifyMove, (req, res) => {
 
 })
 
-app.post('/game/:gameId/reset', (req, res) => {
-    const gameId = req.params.gameId
-})
-
 app.get('/game/:gameId/checkWin', (req, res) => {
     const gameId = req.params.gameId
     const game = GameService(games).findGame(gameId)
@@ -98,9 +94,12 @@ app.get('/game/:gameId/checkWin', (req, res) => {
 })
 
 app.get('/game/:gameId/reset', (req, res) => {
+    console.log('reset hit')
+
     const gameId = req.params.gameId
     const game = GameService(games).findGame(gameId)
-    if (game) GameService(games).resetGame(game);
+    if (game) res.send(GameService(games).resetGame(game));
+
 })
 app.get('/game/:gameId', (req, res) => {
 
@@ -117,7 +116,6 @@ app.get('/game/:gameId', (req, res) => {
     // render the game at the id 
     const id = req.params.gameId;
     const game = GameService(games).findGame(id)
-    console.log("game found: " + game)
 
     /**
      * App.tsx
