@@ -1,6 +1,5 @@
 import express, { RequestHandler } from "express";
 import cors from "cors";
-import { useState } from "react";
 
 import GameService, { Game, PlayerToken } from "./gameService"
 
@@ -35,7 +34,7 @@ type Position = {
 
 }
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
     res.send("hello world")
 })
 
@@ -55,9 +54,9 @@ const verifyMove: RequestHandler = (req, res, next) => {
  * }
  */
 app.post('/game/:gameId/move', verifyMove, (req, res) => {
+    // console.log(req)
     const gameId = req.params.gameId
     const game = GameService(games).findGame(gameId)
-    console.log('game found' + game)
 
     if (!game) {
         return res.status(404).send('Game not found')
@@ -73,16 +72,34 @@ app.post('/game/:gameId/move', verifyMove, (req, res) => {
     const { row }: Position = req.body.position
     const { column }: Position = req.body.position
 
-    console.log("token:" + token)
-    console.log("body:" + JSON.stringify(req.body))
+    // console.log("token:" + token)
+    // console.log("body:" + JSON.stringify(req.body))
 
     const response = GameService(games).makeMove(game, token, row, column)
 
-    res.status(response.status).send(response.output)
+    res.status(response.status).json(response.data)
 
 })
 
+app.get('/game/:gameId/checkWin', (req, res) => {
+    const gameId = req.params.gameId
+    const game = GameService(games).findGame(gameId)
 
+    if (game) {
+        res.json(GameService(games).checkWinCondition(game))
+    }
+
+
+})
+
+app.get('/game/:gameId/reset', (req, res) => {
+    console.log('reset hit')
+
+    const gameId = req.params.gameId
+    const game = GameService(games).findGame(gameId)
+    if (game) res.send(GameService(games).resetGame(game));
+
+})
 app.get('/game/:gameId', (req, res) => {
 
     // make game serverside first, so you can play the game via curl commands
@@ -98,7 +115,6 @@ app.get('/game/:gameId', (req, res) => {
     // render the game at the id 
     const id = req.params.gameId;
     const game = GameService(games).findGame(id)
-    console.log("game found: " + game)
 
     /**
      * App.tsx
