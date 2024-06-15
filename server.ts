@@ -1,6 +1,5 @@
 import express, { RequestHandler } from "express";
 import cors from "cors";
-import { useState } from "react";
 
 import GameService, { Game, PlayerToken } from "./gameService"
 
@@ -35,7 +34,7 @@ type Position = {
 
 }
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
     res.send("hello world")
 })
 

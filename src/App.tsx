@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import GameService, { PlayerToken, WinState } from '../gameService';
+import { PlayerToken, WinState } from '../gameService';
 
 
 type Board = Move[][]
@@ -27,7 +27,6 @@ type MoveProps = {
 }
 
 const GAME_ID = 123123
-const myToken: PlayerToken = "O"
 
 /** TODO
  * allow user to specify game id and select from a lobby
@@ -139,7 +138,6 @@ const Board = () => {
 
   const [myToken, setToken] = useState<PlayerToken>('X')
   const [winState, setWinState] = useState<WinState>({ outcome: null, winner: "" })
-
 
   const [winStep, setWinStep] = useState(0)
   const [board, setBoard] = useState<Board>(structuredClone(initialBoard))
