@@ -49,7 +49,7 @@ const Move = ({ winState, myToken, rowIndex, mvIndex }: MoveProps) => {
 
   const getMoveFromServer = async () => {
     setForbidden(false)
-    const response = await fetch(`http://localhost:4000/game/${GAME_ID}`)
+    const response = await fetch(`https://picpacpoe.netlify.app/game/${GAME_ID}`)
     const jsonResponse = await response.json()
     const serverBoard = jsonResponse.game.data.board
     // console.log("ayo", serverBoard)
@@ -80,7 +80,7 @@ const Move = ({ winState, myToken, rowIndex, mvIndex }: MoveProps) => {
       setForbidden(false)
       console.log(GAME_ID)
 
-      const response = await fetch(`http://localhost:4000/game/${GAME_ID}/move`, {
+      const response = await fetch(`https://picpacpoe.netlify.app/game/${GAME_ID}/move`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -145,7 +145,7 @@ const Board = () => {
 
   const checkWinClock = async () => {
 
-    const winResponse = await fetch(`http://localhost:4000/game/${GAME_ID}/checkWin`)
+    const winResponse = await fetch(`https://picpacpoe.netlify.app/game/${GAME_ID}/checkWin`)
     setWinState(await winResponse.json())
 
   }
@@ -190,7 +190,7 @@ const Board = () => {
 
       <button onClick={async () => {
         // debugger;
-        await fetch(`http://localhost:4000/game/${GAME_ID}/reset`);
+        await fetch(`https://picpacpoe.netlify.app/game/${GAME_ID}/reset`);
         setWinState({ outcome: null, winner: "" })
         window.location.reload()
 
